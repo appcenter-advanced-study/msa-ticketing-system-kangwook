@@ -54,6 +54,18 @@ public class SeatService {
         kafkaProducer.sendReservationRequest(scheduleId,seatId,userName);
     }
 
+    // 예매 생성 실패 보상 트랜잭션
+    @Transactional
+    public void rollbackReservation(Long seatId){
+        Seat seat=seatRepository.findBySeatIdWithRock(seatId)
+                .orElseThrow(() -> new CustomException(StatusCode.SEAT_NOT_EXIST));
+
+        if(seat.getIsReserved())
+            seat.rollback();
+
+        log.info("예약 롤백 이벤트 처리: 좌석ID={}", seatId);
+    }
+
     public List<SeatRes> getSeatList(Long scheduleId) {
         List<Seat> seats = seatRepository.findAllBySchedule_IdOrderByRowIndexAscColumnIndexAsc(scheduleId);
         return seats.stream()
