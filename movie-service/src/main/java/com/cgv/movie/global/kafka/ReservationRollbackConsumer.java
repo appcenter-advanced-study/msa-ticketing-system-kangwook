@@ -3,8 +3,6 @@ package com.cgv.movie.global.kafka;
 
 import com.cgv.movie.domain.seat.SeatService;
 import com.cgv.movie.global.kafka.event.ReservationRollbackEvent;
-import com.cgv.reservation.domain.reservation.ReservationService;
-import com.cgv.reservation.global.kafka.event.ReservationEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
