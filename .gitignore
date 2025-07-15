@@ -7,7 +7,7 @@ build/
 ### IntelliJ IDEA ###
 docker-compose.yml
 .idea
-.data
+.data/
 **/src/main/resources/**
 .idea/modules.xml
 .idea/jarRepositories.xml
