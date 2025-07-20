@@ -53,15 +53,15 @@ public class SeatController {
                 .body(CommonResponse.from(SEAT_DELETE.getMessage()));
     }
 
-    @Operation(summary = "영화 좌석 예약 요청", description = "해당 좌석에 대한 예매를 요청합니다.")
-    @PostMapping("/reservation")
-    public ResponseEntity<CommonResponse<Object>> createReservationRequest(
-            @RequestParam Long scheduleId,
-            @RequestParam Long seatId,
-            @RequestParam String userName){
-        seatService.createReservationRequest(scheduleId, seatId, userName);
-        return ResponseEntity
-                .status(SEAT_RESERVATION_CREATE.getStatus())
-                .body(CommonResponse.from(SEAT_RESERVATION_CREATE.getMessage()));
-    }
+//    @Operation(summary = "영화 좌석 예약 요청", description = "해당 좌석에 대한 예매를 요청합니다.")
+//    @PostMapping("/reservation")
+//    public ResponseEntity<CommonResponse<Object>> createReservationRequest(
+//            @RequestParam Long scheduleId,
+//            @RequestParam Long seatId,
+//            @RequestParam String userName){
+//        seatService.tryLockSeat(scheduleId, seatId, userName);
+//        return ResponseEntity
+//                .status(SEAT_RESERVATION_CREATE.getStatus())
+//                .body(CommonResponse.from(SEAT_RESERVATION_CREATE.getMessage()));
+//    }
 }

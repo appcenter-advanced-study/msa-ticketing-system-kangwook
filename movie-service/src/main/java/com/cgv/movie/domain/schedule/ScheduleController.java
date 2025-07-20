@@ -3,7 +3,7 @@ package com.cgv.movie.domain.schedule;
 import com.cgv.movie.domain.schedule.dto.ScheduleReq;
 import com.cgv.movie.domain.schedule.dto.ScheduleRes;
 import com.cgv.movie.global.common.CommonResponse;
-import com.cgv.movie.global.kafka.KafkaProducer;
+import com.cgv.movie.global.kafka.SeatEventProducer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ import static com.cgv.movie.global.common.StatusCode.*;
 @RequestMapping("/api/schedules")
 public class ScheduleController {
     private final ScheduleService scheduleService;
-    private final KafkaProducer kafkaProducer;
+    private final SeatEventProducer seatEventProducer;
 
     @Operation(summary = "영화 일정 생성", description = "해당 영화(movieId)의 일정을 생성합니다.")
     @PostMapping
@@ -57,7 +57,7 @@ public class ScheduleController {
     @Operation(summary = "예매 대기열 입장(카프카)", description = "카프카를 통해 Redis 예매 대기열에 입장합니다.")
     @PostMapping("/enter/kafka")
     public ResponseEntity<CommonResponse<Object>> enterQueueWithKafka(@RequestParam String username, @RequestParam Long scheduleId) {
-        kafkaProducer.sendQueueEvent(scheduleId, username);
+        seatEventProducer.sendQueueEvent(scheduleId, username);
         return ResponseEntity
                 .status(QUEUE_USER_INSERT.getStatus())
                 .body(CommonResponse.from(QUEUE_USER_INSERT.getMessage()));

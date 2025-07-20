@@ -2,17 +2,14 @@ package com.cgv.ticket.global.kafka;
 
 
 import com.cgv.ticket.domain.ticket.TicketService;
-import com.cgv.ticket.global.kafka.event.TicketCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class TicketConsumer {
+public class TicketEventConsumer {
     private final TicketService ticketService;
 
 

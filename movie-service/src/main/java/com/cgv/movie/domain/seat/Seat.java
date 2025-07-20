@@ -22,8 +22,9 @@ public class Seat {
     @Column(name = "column_index",nullable = false)
     private Integer columnIndex;
 
-    @Column(name = "is_reserved", nullable = false)
-    private Boolean isReserved;
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id", nullable = false)
@@ -31,13 +32,16 @@ public class Seat {
 
 
     @Builder
-    public Seat(Integer rowIndex, Integer columnIndex, Boolean isReserved, Schedule schedule) {
+    public Seat(Integer rowIndex, Integer columnIndex, Status status, Schedule schedule) {
         this.rowIndex = rowIndex;
         this.columnIndex = columnIndex;
-        this.isReserved = isReserved;
+        this.status = status;
         this.schedule = schedule;
     }
 
-    public void soldout(){this.isReserved=true;}
-    public void rollback(){this.isReserved=false;}
+    public void changeStatusAvailable(){ this.status=Status.AVAILABLE; }
+
+    public void changeStatusLocked(){ this.status=Status.LOCKED; }
+
+    public void changeStatusReserved(){ this.status=Status.RESERVED; }
 }

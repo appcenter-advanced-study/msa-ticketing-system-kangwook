@@ -1,6 +1,6 @@
 package com.cgv.ticket.global.config;
 
-import com.cgv.ticket.global.kafka.event.TicketCreatedEvent;
+import com.cgv.ticket.global.kafka.event.ticket.TicketCreatedEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;

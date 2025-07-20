@@ -1,4 +1,4 @@
-package com.cgv.ticket.global.kafka.event;
+package com.cgv.movie.global.kafka.event.ticket;
 
 import lombok.Builder;
 import lombok.Getter;

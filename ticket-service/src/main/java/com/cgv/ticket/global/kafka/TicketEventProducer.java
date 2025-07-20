@@ -1,7 +1,7 @@
 package com.cgv.ticket.global.kafka;
 
 
-import com.cgv.ticket.global.kafka.event.TicketCreatedEvent;
+import com.cgv.ticket.global.kafka.event.ticket.TicketCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

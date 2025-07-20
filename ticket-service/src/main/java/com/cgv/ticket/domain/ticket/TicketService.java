@@ -5,7 +5,7 @@ import com.cgv.ticket.domain.ticket.dto.TicketRes;
 import com.cgv.ticket.global.common.StatusCode;
 import com.cgv.ticket.global.exception.CustomException;
 import com.cgv.ticket.global.kafka.TicketEventProducer;
-import com.cgv.ticket.global.kafka.event.TicketCreatedEvent;
+import com.cgv.ticket.global.kafka.event.ticket.TicketCreatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

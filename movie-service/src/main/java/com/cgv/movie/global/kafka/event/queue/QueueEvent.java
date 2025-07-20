@@ -1,18 +1,16 @@
-package com.cgv.movie.global.kafka.event;
+package com.cgv.movie.global.kafka.event.queue;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ReservationEvent {
+public class QueueEvent {
     private Long scheduleId;
-    private Long seatId;
     private String userName;
 
-    public ReservationEvent(Long scheduleId, Long seatId, String userName) {
+    public QueueEvent(Long scheduleId, String userName) {
         this.scheduleId = scheduleId;
-        this.seatId = seatId;
         this.userName = userName;
     }
 }
