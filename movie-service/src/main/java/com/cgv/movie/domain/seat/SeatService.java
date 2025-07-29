@@ -10,9 +10,11 @@ import com.cgv.movie.global.exception.CustomException;
 import com.cgv.movie.global.kafka.SeatEventProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +25,7 @@ import java.util.Optional;
 public class SeatService {
     private final SeatRepository seatRepository;
     private final ScheduleRepository scheduleRepository;
-    private final SeatEventProducer seatEventProducer;
+    private final StringRedisTemplate redisTemplate;
 
     @Transactional
     public List<SeatRes> createSeat(Long scheduleId, SeatReq seatReq) {
@@ -47,23 +49,14 @@ public class SeatService {
         Seat seat=seatRepository.findBySeatIdWithRock(seatId)
                 .orElseThrow(() -> new CustomException(StatusCode.SEAT_LOCKED));
 
-        if(seat.getStatus().equals(Status.AVAILABLE))
+        if(seat.getStatus().equals(Status.AVAILABLE)) {
             seat.changeStatusLocked();
+            lockSeatWithTTL(seatId);
+        }
         else throw new CustomException(StatusCode.SEAT_UNAVAILABLE);
 
     }
 
-//    // 예매 생성 실패 보상 트랜잭션
-//    @Transactional
-//    public void rollbackReservation(Long seatId){
-//        Seat seat=seatRepository.findBySeatIdWithRock(seatId)
-//                .orElseThrow(() -> new CustomException(StatusCode.SEAT_NOT_EXIST));
-//
-//        if(seat.getIsReserved())
-//            seat.rollback();
-//
-//        log.info("예약 롤백 이벤트 처리: 좌석ID={}", seatId);
-//    }
 
     public List<SeatRes> getSeatList(Long scheduleId) {
         List<Seat> seats = seatRepository.findAllBySchedule_IdOrderByRowIndexAscColumnIndexAsc(scheduleId);
@@ -75,6 +68,12 @@ public class SeatService {
     @Transactional
     public void deleteSeatAll(Long scheduleId) {
         seatRepository.deleteAllBySchedule_Id(scheduleId);
+    }
+
+    public void lockSeatWithTTL(Long seatId) {
+        // Redis에 좌석 선점 정보 저장 (5분 후 만료)
+        String redisKey = "seat:" + seatId;
+        redisTemplate.opsForValue().set(redisKey, "LOCKED", Duration.ofMinutes(5));
     }
 
 }
