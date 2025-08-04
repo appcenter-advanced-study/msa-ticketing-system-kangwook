@@ -7,7 +7,6 @@ import com.cgv.movie.domain.seat.dto.SeatReq;
 import com.cgv.movie.domain.seat.dto.SeatRes;
 import com.cgv.movie.global.common.StatusCode;
 import com.cgv.movie.global.exception.CustomException;
-import com.cgv.movie.global.kafka.SeatEventProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -73,7 +72,7 @@ public class SeatService {
     public void lockSeatWithTTL(Long seatId) {
         // Redis에 좌석 선점 정보 저장 (5분 후 만료)
         String redisKey = "seat:" + seatId;
-        redisTemplate.opsForValue().set(redisKey, "LOCKED", Duration.ofMinutes(5));
+        redisTemplate.opsForValue().set(redisKey, "LOCKED", Duration.ofSeconds(5));
     }
 
 }
