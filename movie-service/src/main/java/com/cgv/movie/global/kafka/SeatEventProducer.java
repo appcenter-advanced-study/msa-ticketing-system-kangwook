@@ -1,7 +1,6 @@
 package com.cgv.movie.global.kafka;
 
 
-import com.cgv.movie.global.kafka.event.queue.QueueEvent;
 import com.cgv.movie.global.kafka.event.seat.SeatLockFailEvent;
 import com.cgv.movie.global.kafka.event.seat.SeatLockSuccessEvent;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +30,4 @@ public class SeatEventProducer {
                 event.getUserName(), event.getSeatId());
     }
 
-//    public void sendQueueEvent(Long scheduleId, String userName) {
-//        QueueEvent request = new QueueEvent(scheduleId, userName);
-//        kafkaTemplate.send("redis-queue", scheduleId.toString(), request);
-//
-//        log.info("Redis 큐 입장 요청 전송됨: 사용자={}, 영화 스케줄ID={}" , userName, scheduleId);
-//    }
 }

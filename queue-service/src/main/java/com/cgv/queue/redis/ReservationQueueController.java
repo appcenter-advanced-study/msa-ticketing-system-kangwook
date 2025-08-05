@@ -39,7 +39,7 @@ public class ReservationQueueController {
     public ResponseEntity<CommonResponse<QueueRes>> canReserve(@RequestParam String username, @RequestParam Long scheduleId) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(CommonResponse.from(RESERVATION_CREATE.getMessage(),
+                .body(CommonResponse.from(QUEUE_USER_ISAVAILABLE.getMessage(),
                         availableQueueService.isUserAllowed(username, scheduleId)));
     }
 

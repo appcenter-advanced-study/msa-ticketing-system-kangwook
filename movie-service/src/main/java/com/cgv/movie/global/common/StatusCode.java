@@ -30,6 +30,9 @@ public enum StatusCode {
     SEAT_LOCKED(CONFLICT,"이미 선택된 좌석입니다."),
     SEAT_UNAVAILABLE(BAD_REQUEST,"선택할 수 없는 좌석입니다."),
 
+    // Redis Queue
+    QUEUE_USER_INSERT(OK,"대기열 입장"),
+
 
     /* 400 BAD_REQUEST : 잘못된 요청 */
     INPUT_VALUE_INVALID(BAD_REQUEST,"유효하지 않은 입력입니다."),
