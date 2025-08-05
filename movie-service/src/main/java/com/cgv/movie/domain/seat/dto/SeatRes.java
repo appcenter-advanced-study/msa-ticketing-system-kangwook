@@ -1,6 +1,7 @@
 package com.cgv.movie.domain.seat.dto;
 
 import com.cgv.movie.domain.seat.Seat;
+import com.cgv.movie.domain.seat.Status;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -24,7 +25,7 @@ public class SeatRes {
                 .id(seat.getId())
                 .rowIndex(seat.getRowIndex())
                 .columnIndex(seat.getColumnIndex())
-                .isReserved(seat.getIsReserved())
+                .isReserved(seat.getStatus() == Status.AVAILABLE)
                 .build();
     }
 }

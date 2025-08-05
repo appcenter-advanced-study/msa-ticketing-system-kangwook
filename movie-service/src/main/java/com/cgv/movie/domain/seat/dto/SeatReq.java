@@ -2,6 +2,7 @@ package com.cgv.movie.domain.seat.dto;
 
 import com.cgv.movie.domain.schedule.Schedule;
 import com.cgv.movie.domain.seat.Seat;
+import com.cgv.movie.domain.seat.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SeatReq {
     private Integer row;
-
     private Integer column;
 
     public SeatReq(Integer row, Integer column) {
@@ -21,7 +21,7 @@ public class SeatReq {
         return Seat.builder()
                 .rowIndex(row)
                 .columnIndex(column)
-                .isReserved(false)
+                .status(Status.AVAILABLE)
                 .schedule(schedule)
                 .build();
     }
