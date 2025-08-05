@@ -26,10 +26,10 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(PessimisticLockingFailureException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(PessimisticLockingFailureException e){
         ErrorResponse errorResponse=ErrorResponse.builder()
-                .message(StatusCode.SEAT_SOLD_OUT.getMessage())
+                .message(StatusCode.SEAT_LOCKED.getMessage())
                 .build();
 
-        return ResponseEntity.status(StatusCode.SEAT_SOLD_OUT.getStatus())
+        return ResponseEntity.status(StatusCode.SEAT_LOCKED.getStatus())
                 .body(errorResponse);
     }
 }
