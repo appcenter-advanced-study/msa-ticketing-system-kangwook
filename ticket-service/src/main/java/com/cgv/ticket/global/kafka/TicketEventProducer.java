@@ -15,7 +15,7 @@ public class TicketEventProducer {
 
     public void sendTicketCreatedEvent(TicketCreatedEvent ticketCreatedEvent) {
         String topic = "ticket.created";
-        kafkaTemplate.send(topic, ticketCreatedEvent); // seatId 기준 파티셔닝
+        kafkaTemplate.send(topic, ticketCreatedEvent);
 
         log.info("티켓 생성 이벤트 전송됨: 티켓ID={}, 토픽={}",
                 ticketCreatedEvent.getTicketId(), topic);

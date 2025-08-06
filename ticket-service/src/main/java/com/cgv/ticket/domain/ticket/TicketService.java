@@ -48,8 +48,6 @@ public class TicketService {
 
         ticketEventProducer.sendTicketCreatedEvent(ticketCreatedEvent);
 
-        log.info("예약 저장 완료: 사용자={}, 좌석ID={}", userName, seatId);
-
     }
 
     @Transactional

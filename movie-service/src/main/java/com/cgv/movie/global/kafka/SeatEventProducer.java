@@ -18,7 +18,7 @@ public class SeatEventProducer {
         String topic = "seat.lock.success";
         kafkaTemplate.send(topic,event);
 
-        log.info("좌석 선점 성공 이벤트 전송됨: 사용자={}, 좌석ID={}",
+        log.info("좌석 선점 성공 이벤트 전송: 사용자={}, 좌석ID={}",
                 event.getUserName(), event.getSeatId());
     }
 
@@ -26,7 +26,7 @@ public class SeatEventProducer {
         String topic = "seat.lock.fail";
         kafkaTemplate.send(topic,event);
 
-        log.info("좌석 선점 실패 이벤트 전송됨: 사용자={}, 좌석ID={}",
+        log.info("좌석 선점 실패 이벤트 전송: 사용자={}, 좌석ID={}",
                 event.getUserName(), event.getSeatId());
     }
 

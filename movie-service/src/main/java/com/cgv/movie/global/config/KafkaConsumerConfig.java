@@ -46,8 +46,7 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, TicketCreatedEvent> ticketCreatedKafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, TicketCreatedEvent> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
+        ConcurrentKafkaListenerContainerFactory<String, TicketCreatedEvent> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(ticketCreatedConsumerFactory());
         return factory;
     }

@@ -48,12 +48,23 @@ public class SeatService {
         Seat seat=seatRepository.findBySeatIdWithRock(seatId)
                 .orElseThrow(() -> new CustomException(StatusCode.SEAT_LOCKED));
 
-        if(seat.getStatus().equals(Status.AVAILABLE)) {
+        if(seat.getStatus()==Status.AVAILABLE) {
             seat.changeStatusLocked();
             lockSeatWithTTL(seatId);
         }
         else throw new CustomException(StatusCode.SEAT_UNAVAILABLE);
 
+    }
+
+    @Transactional
+    public void unLockSeat(Long seatId){
+        Seat seat=seatRepository.findById(seatId)
+                .orElseThrow(() -> new CustomException(StatusCode.SEAT_NOT_EXIST));
+
+        if(seat.getStatus() == Status.LOCKED){
+            seat.changeStatusAvailable();
+            log.info("{}번 좌석 락 해제 처리", seatId);
+        }
     }
 
 
@@ -70,7 +81,7 @@ public class SeatService {
     }
 
     public void lockSeatWithTTL(Long seatId) {
-        // Redis에 좌석 선점 정보 저장 (5분 후 만료)
+        // Redis에 좌석 선점 정보 저장 (5초 후 만료)
         String redisKey = "seat:" + seatId;
         redisTemplate.opsForValue().set(redisKey, "LOCKED", Duration.ofSeconds(5));
     }

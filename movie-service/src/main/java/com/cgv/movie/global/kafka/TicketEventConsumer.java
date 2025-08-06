@@ -22,7 +22,7 @@ public class TicketEventConsumer {
 
 
     @Transactional
-    @KafkaListener(topicPattern = "ticket.created",
+    @KafkaListener(topics = "ticket.created",
             groupId = "seat-group",
             containerFactory = "ticketCreatedKafkaListenerContainerFactory")
     public void handleTicketCreatedEvent(ConsumerRecord<String, TicketCreatedEvent> record) {
@@ -53,8 +53,5 @@ public class TicketEventConsumer {
 
         }
 
-
-
-        seatService.tryLockSeat(event.getSeatId());
     }
 }
