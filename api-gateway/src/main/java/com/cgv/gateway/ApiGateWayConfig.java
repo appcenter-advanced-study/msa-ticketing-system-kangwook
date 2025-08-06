@@ -13,8 +13,8 @@ public class ApiGateWayConfig {
         return builder.routes()
                 .route("movie-service", r -> r.path("/api/movies/**", "/api/schedules/**", "/api/seats/**")
                         .uri("lb://movie-service"))
-                .route("reservation-service", r -> r.path("/api/reservations/**")
-                        .uri("lb://reservation-service"))
+                .route("ticket-service", r -> r.path("/api/tickets/**")
+                        .uri("lb://ticket-service"))
                 .route("queue-service", r -> r.path("/api/queues/**")
                         .uri("lb://queue-service"))
                 .build();
