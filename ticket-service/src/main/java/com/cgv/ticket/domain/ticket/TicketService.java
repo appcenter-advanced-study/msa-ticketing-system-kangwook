@@ -57,7 +57,27 @@ public class TicketService {
 
         if(ticket.getStatus()==Status.AVAILABLE)
             ticket.changeStatusCancel();
-        else throw new CustomException(StatusCode.TICKET_IS_CANCELED);
+        else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_CANCEL);
+    }
+
+    @Transactional
+    public void awaitingPaymentTicket(Long ticketId){
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
+
+        if(ticket.getStatus()==Status.PENDING)
+            ticket.changeStatusAwaitingPayment();
+        else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_AWAITING_PAYMENT);
+    }
+
+    @Transactional
+    public void failTicket(Long ticketId){
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
+
+        if(ticket.getStatus()==Status.PENDING)
+            ticket.changeStatusFailed();
+        else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_FAIL);
     }
 
 }

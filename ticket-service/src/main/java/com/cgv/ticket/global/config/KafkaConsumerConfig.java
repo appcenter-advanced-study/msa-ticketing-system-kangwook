@@ -1,6 +1,7 @@
 package com.cgv.ticket.global.config;
 
-import com.cgv.ticket.global.kafka.event.ticket.TicketCreatedEvent;
+import com.cgv.ticket.global.kafka.event.seat.SeatLockFailEvent;
+import com.cgv.ticket.global.kafka.event.seat.SeatLockSuccessEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,9 +35,10 @@ public class KafkaConsumerConfig {
         return config;
     }
 
+    // 좌석 락 성공 이벤트 수신
     @Bean
-    public ConsumerFactory<String, TicketCreatedEvent> consumerFactory() {
-        JsonDeserializer<TicketCreatedEvent> deserializer = new JsonDeserializer<>(TicketCreatedEvent.class);
+    public ConsumerFactory<String, SeatLockSuccessEvent> seatLockSuccessConsumerFactory() {
+        JsonDeserializer<SeatLockSuccessEvent> deserializer = new JsonDeserializer<>(SeatLockSuccessEvent.class);
         deserializer.addTrustedPackages(trustedPackages);
         deserializer.setUseTypeHeaders(false);
 
@@ -44,11 +46,31 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, TicketCreatedEvent> kafkaListenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, TicketCreatedEvent> factory =
+    public ConcurrentKafkaListenerContainerFactory<String, SeatLockSuccessEvent> seatLockSuccessKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, SeatLockSuccessEvent> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
-        factory.setConsumerFactory(consumerFactory());
+        factory.setConsumerFactory(seatLockSuccessConsumerFactory());
         return factory;
     }
+
+    // 좌석 락 실패 이벤트 수신
+    @Bean
+    public ConsumerFactory<String, SeatLockFailEvent> seatLockFailConsumerFactory() {
+        JsonDeserializer<SeatLockFailEvent> deserializer = new JsonDeserializer<>(SeatLockFailEvent.class);
+        deserializer.addTrustedPackages(trustedPackages);
+        deserializer.setUseTypeHeaders(false);
+
+        return new DefaultKafkaConsumerFactory<>(baseConsumerConfigs(), new StringDeserializer(),deserializer);
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, SeatLockFailEvent> seatLockFailKafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, SeatLockFailEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(seatLockFailConsumerFactory());
+        return factory;
+    }
+
+
 }
 

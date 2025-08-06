@@ -37,6 +37,8 @@ public class Ticket extends BaseEntity{
 
     public void changeStatusPending(){ this.status=Status.PENDING; }
 
+    public void changeStatusAwaitingPayment(){ this.status=Status.AWAITING_PAYMENT; }
+
     public void changeStatusFailed(){ this.status=Status.FAIL; }
 
     public void changeStatusAvailable(){ this.status=Status.AVAILABLE; }
