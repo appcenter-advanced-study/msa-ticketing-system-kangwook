@@ -58,23 +58,13 @@ public class SeatService {
 
     @Transactional
     public void unLockSeat(Long seatId){
-        Seat seat=seatRepository.findById(seatId)
-                .orElseThrow(() -> new CustomException(StatusCode.SEAT_NOT_EXIST));
+        Seat seat=finBySeatId(seatId);
 
         if(seat.getStatus() == Status.LOCKED){
             seat.changeStatusAvailable();
             log.info("{}번 좌석 락 해제 처리", seatId);
         }
     }
-
-
-    public List<SeatRes> getSeatList(Long scheduleId) {
-        List<Seat> seats = seatRepository.findAllBySchedule_IdOrderByRowIndexAscColumnIndexAsc(scheduleId);
-        return seats.stream()
-                .map(SeatRes::from)
-                .toList();
-    }
-
     @Transactional
     public void deleteSeatAll(Long scheduleId) {
         seatRepository.deleteAllBySchedule_Id(scheduleId);
@@ -85,5 +75,19 @@ public class SeatService {
         String redisKey = "seat:" + seatId;
         redisTemplate.opsForValue().set(redisKey, "LOCKED", Duration.ofSeconds(5));
     }
+
+    public Seat finBySeatId(Long seatId){
+        return seatRepository.findById(seatId)
+                .orElseThrow(() -> new CustomException(StatusCode.SEAT_NOT_EXIST));
+    }
+
+    public List<SeatRes> getSeatList(Long scheduleId) {
+        List<Seat> seats = seatRepository.findAllBySchedule_IdOrderByRowIndexAscColumnIndexAsc(scheduleId);
+        return seats.stream()
+                .map(SeatRes::from)
+                .toList();
+    }
+
+
 
 }
