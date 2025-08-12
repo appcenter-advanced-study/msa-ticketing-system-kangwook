@@ -49,6 +49,6 @@ public class SeatEventConsumer {
         SeatExpiredEvent event = record.value();
         log.info("티켓 만료 이벤트 수신: 티켓ID={}",  event.getTicketId());
 
-        ticketService.failTicket(event.getTicketId());
+        ticketService.expireTicket(event.getTicketId());
     }
 }

@@ -56,27 +56,32 @@ public class SeatService {
                 seat.changeStatusLocked();
                 lockSeatWithTTL(seatId, ticketId);
                 return true;
-            } else {
-                return false;
             }
+            else
+                return false;
 
         } catch (PessimisticLockingFailureException ex) {
             // 락 획득 실패 시 false 반환 (이미 다른 트랜잭션이 선점한 상황)
-            log.warn("좌석 락 획득 실패 seatId={}", seatId);
+            log.info("좌석 락 획득 실패 seatId={}", seatId);
             return false;
         }
 
     }
 
     @Transactional
-    public void unLockSeat(Long seatId){
+    public boolean unLockSeat(Long seatId){
         Seat seat=finBySeatId(seatId);
 
         if(seat.getStatus() == Status.LOCKED){
             seat.changeStatusAvailable();
             log.info("{}번 좌석 락 해제 처리", seatId);
+            return true;
         }
+
+        log.info("{}번 좌석은 LOCKED 상태가 아님, 현재 상태={}", seatId, seat.getStatus());
+        return false;
     }
+
     @Transactional
     public void deleteSeatAll(Long scheduleId) {
         seatRepository.deleteAllBySchedule_Id(scheduleId);

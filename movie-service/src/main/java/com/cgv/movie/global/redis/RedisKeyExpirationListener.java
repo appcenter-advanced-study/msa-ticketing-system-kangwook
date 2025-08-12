@@ -38,14 +38,15 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
             Long seatId = Long.parseLong(parts[1]);
             Long ticketId = Long.parseLong(parts[3]);
 
-            seatService.unLockSeat(seatId);
+            boolean unlocked = seatService.unLockSeat(seatId);
 
-            SeatExpiredEvent seatExpiredEvent= SeatExpiredEvent.builder()
-                    .ticketId(ticketId)
-                    .build();
+            if(unlocked){
+                SeatExpiredEvent seatExpiredEvent= SeatExpiredEvent.builder()
+                        .ticketId(ticketId)
+                        .build();
 
-            seatEventProducer.sendSeatExpiredEvent(seatExpiredEvent);
+                seatEventProducer.sendSeatExpiredEvent(seatExpiredEvent);
+            }
         }
-
     }
 }

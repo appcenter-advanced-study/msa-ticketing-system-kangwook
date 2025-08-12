@@ -62,32 +62,50 @@ public class TicketService {
 
     @Transactional
     public void awaitingPaymentTicket(Long ticketId){
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
+        try{
+            Ticket ticket = ticketRepository.findById(ticketId)
+                    .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
 
-        if(ticket.getStatus()==Status.PENDING)
-            ticket.changeStatusAwaitingPayment();
-        else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_AWAITING_PAYMENT);
+            if(ticket.getStatus()==Status.PENDING)
+                ticket.changeStatusAwaitingPayment();
+            else log.error("awaitingPaymentTicket 호출: 티켓 상태가 PENDING이 아닙니다. ticketId={}, status={}", ticketId, ticket.getStatus());
+        }
+        catch (CustomException e) {
+            log.error("awaitingpaymentTicket 처리 중 예외 발생: {}", e.getMessage());
+        }
+
+
     }
 
     @Transactional
     public void failTicket(Long ticketId){
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
+        try{
+            Ticket ticket = ticketRepository.findById(ticketId)
+                    .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
 
-        if(ticket.getStatus()==Status.PENDING)
-            ticket.changeStatusFailed();
-        else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_FAIL);
+            if(ticket.getStatus()==Status.PENDING)
+                ticket.changeStatusFailed();
+            else log.error("failTicket 호출: 티켓 상태가 PENDING이 아닙니다. ticketId={}, status={}", ticketId, ticket.getStatus());
+        }
+        catch (CustomException e) {
+            log.error("failTicket 처리 중 예외 발생: {}", e.getMessage());
+        }
     }
 
     @Transactional
     public void expireTicket(Long ticketId){
-        Ticket ticket = ticketRepository.findById(ticketId)
-                .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
+        try{
+            Ticket ticket = ticketRepository.findById(ticketId)
+                    .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
 
-        if(ticket.getStatus()==Status.PENDING)
-            ticket.changeStatusFailed();
-        else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_FAIL);
+            if(ticket.getStatus()==Status.PENDING || ticket.getStatus()==Status.AWAITING_PAYMENT)
+                ticket.changeStatusFailed();
+            else log.error("expireTicket 호출: 티켓 상태가 PENDING 또는 AWAITING_PAYMENT이 아닙니다. ticketId={}, status={}", ticketId, ticket.getStatus());
+        }
+        catch (CustomException e) {
+            log.error("expireTicket 처리 중 예외 발생: {}", e.getMessage());
+        }
+
     }
 
 }
