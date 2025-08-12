@@ -9,6 +9,7 @@ import com.cgv.movie.global.common.StatusCode;
 import com.cgv.movie.global.exception.CustomException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
+
+import static com.cgv.movie.global.common.StatusCode.SEAT_NOT_EXIST;
 
 @Service
 @RequiredArgsConstructor
@@ -44,15 +47,24 @@ public class SeatService {
 
 
     @Transactional
-    public void tryLockSeat(Long seatId, Long ticketId){
-        Seat seat=seatRepository.findBySeatIdWithRock(seatId)
-                .orElseThrow(() -> new CustomException(StatusCode.SEAT_LOCKED));
+    public boolean tryLockSeat(Long seatId, Long ticketId){
+        try {
+            Seat seat = seatRepository.findBySeatIdWithRock(seatId)
+                    .orElseThrow(() -> new CustomException(SEAT_NOT_EXIST));
 
-        if(seat.getStatus()==Status.AVAILABLE) {
-            seat.changeStatusLocked();
-            lockSeatWithTTL(seatId,ticketId);
+            if (seat.getStatus() == Status.AVAILABLE) {
+                seat.changeStatusLocked();
+                lockSeatWithTTL(seatId, ticketId);
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (PessimisticLockingFailureException ex) {
+            // 락 획득 실패 시 false 반환 (이미 다른 트랜잭션이 선점한 상황)
+            log.warn("좌석 락 획득 실패 seatId={}", seatId);
+            return false;
         }
-        else throw new CustomException(StatusCode.SEAT_UNAVAILABLE);
 
     }
 

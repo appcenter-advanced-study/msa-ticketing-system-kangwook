@@ -1,9 +1,7 @@
 package com.cgv.movie.global.kafka;
 
 
-import com.cgv.movie.domain.seat.Seat;
 import com.cgv.movie.domain.seat.SeatService;
-import com.cgv.movie.domain.seat.Status;
 import com.cgv.movie.global.kafka.event.seat.SeatLockFailEvent;
 import com.cgv.movie.global.kafka.event.seat.SeatLockSuccessEvent;
 import com.cgv.movie.global.kafka.event.ticket.TicketCreatedEvent;
@@ -30,11 +28,9 @@ public class TicketEventConsumer {
         TicketCreatedEvent event = record.value();
         log.info("티켓 생성 이벤트 수신: 좌석ID={}",  event.getSeatId());
 
-        Seat seat=seatService.finBySeatId(event.getSeatId());
+        boolean locked=seatService.tryLockSeat(event.getSeatId(),event.getTicketId());
 
-        if(seat.getStatus()== Status.AVAILABLE){
-            seatService.tryLockSeat(event.getSeatId(),event.getTicketId());
-
+        if(locked){
             SeatLockSuccessEvent seatLockSuccessEvent = SeatLockSuccessEvent.builder()
                     .seatId(event.getSeatId())
                     .userName(event.getUserName())

@@ -2,8 +2,6 @@ package com.cgv.movie.global.exception;
 
 
 import com.cgv.movie.global.common.ErrorResponse;
-import com.cgv.movie.global.common.StatusCode;
-import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,14 +20,14 @@ public class ExceptionControllerAdvice {
                 .body(errorResponse);
     }
 
-    // 좌석 예매 실패 시 락 획득에 실패
-    @ExceptionHandler(PessimisticLockingFailureException.class)
-    public ResponseEntity<ErrorResponse> handleCustomException(PessimisticLockingFailureException e){
-        ErrorResponse errorResponse=ErrorResponse.builder()
-                .message(StatusCode.SEAT_LOCKED.getMessage())
-                .build();
-
-        return ResponseEntity.status(StatusCode.SEAT_LOCKED.getStatus())
-                .body(errorResponse);
-    }
+//    // 좌석 예매 실패 시 락 획득에 실패
+//    @ExceptionHandler(PessimisticLockingFailureException.class)
+//    public ResponseEntity<ErrorResponse> handleCustomException(PessimisticLockingFailureException e){
+//        ErrorResponse errorResponse=ErrorResponse.builder()
+//                .message(StatusCode.SEAT_LOCKED.getMessage())
+//                .build();
+//
+//        return ResponseEntity.status(StatusCode.SEAT_LOCKED.getStatus())
+//                .body(errorResponse);
+//    }
 }
