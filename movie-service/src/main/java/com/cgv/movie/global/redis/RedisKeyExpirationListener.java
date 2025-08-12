@@ -1,6 +1,8 @@
 package com.cgv.movie.global.redis;
 
 import com.cgv.movie.domain.seat.SeatService;
+import com.cgv.movie.global.kafka.SeatEventProducer;
+import com.cgv.movie.global.kafka.event.seat.SeatExpiredEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;
@@ -11,11 +13,13 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class RedisKeyExpirationListener extends KeyExpirationEventMessageListener {
     private final SeatService seatService;
+    private final SeatEventProducer seatEventProducer;
 
     // Redis Key 생성/만료 이벤트를 수신
-    public RedisKeyExpirationListener(RedisMessageListenerContainer listenerContainer, SeatService seatService) {
+    public RedisKeyExpirationListener(RedisMessageListenerContainer listenerContainer, SeatService seatService, SeatEventProducer seatEventProducer) {
         super(listenerContainer);
         this.seatService = seatService;
+        this.seatEventProducer = seatEventProducer;
     }
 
     /**
@@ -30,10 +34,17 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
         log.info("Redis 만료 키: {}", expiredKey);
 
         if (expiredKey.startsWith("seat:")) {
-            String seatIdString = expiredKey.split(":")[1];
-            Long seatId = Long.parseLong(seatIdString);
+            String[] parts = expiredKey.split(":");
+            Long seatId = Long.parseLong(parts[1]);
+            Long ticketId = Long.parseLong(parts[3]);
 
             seatService.unLockSeat(seatId);
+
+            SeatExpiredEvent seatExpiredEvent= SeatExpiredEvent.builder()
+                    .ticketId(ticketId)
+                    .build();
+
+            seatEventProducer.sendSeatExpiredEvent(seatExpiredEvent);
         }
 
     }

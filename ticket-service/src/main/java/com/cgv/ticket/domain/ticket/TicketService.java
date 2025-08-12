@@ -80,4 +80,14 @@ public class TicketService {
         else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_FAIL);
     }
 
+    @Transactional
+    public void expireTicket(Long ticketId){
+        Ticket ticket = ticketRepository.findById(ticketId)
+                .orElseThrow(() -> new CustomException(StatusCode.TICKET_NOT_EXIST));
+
+        if(ticket.getStatus()==Status.PENDING)
+            ticket.changeStatusFailed();
+        else throw new CustomException(StatusCode.TICKET_UNAVAILABLE_FAIL);
+    }
+
 }

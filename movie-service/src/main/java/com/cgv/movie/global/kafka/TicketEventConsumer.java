@@ -33,7 +33,7 @@ public class TicketEventConsumer {
         Seat seat=seatService.finBySeatId(event.getSeatId());
 
         if(seat.getStatus()== Status.AVAILABLE){
-            seatService.tryLockSeat(event.getSeatId());
+            seatService.tryLockSeat(event.getSeatId(),event.getTicketId());
 
             SeatLockSuccessEvent seatLockSuccessEvent = SeatLockSuccessEvent.builder()
                     .seatId(event.getSeatId())

@@ -2,6 +2,7 @@ package com.cgv.ticket.global.kafka;
 
 
 import com.cgv.ticket.domain.ticket.TicketService;
+import com.cgv.ticket.global.kafka.event.seat.SeatExpiredEvent;
 import com.cgv.ticket.global.kafka.event.seat.SeatLockFailEvent;
 import com.cgv.ticket.global.kafka.event.seat.SeatLockSuccessEvent;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,17 @@ public class SeatEventConsumer {
     public void handleSeatLockFailEvent(ConsumerRecord<String, SeatLockFailEvent> record) {
         SeatLockFailEvent event = record.value();
         log.info("티켓 실패 이벤트 수신: 티켓ID={}",  event.getTicketId());
+
+        ticketService.failTicket(event.getTicketId());
+    }
+
+    @Transactional
+    @KafkaListener(topics = "seat.expired",
+            groupId = "ticket-expired-group",
+            containerFactory = "seatLockFailKafkaListenerContainerFactory")
+    public void handleSeatLockExpiredEvent(ConsumerRecord<String, SeatExpiredEvent> record) {
+        SeatExpiredEvent event = record.value();
+        log.info("티켓 만료 이벤트 수신: 티켓ID={}",  event.getTicketId());
 
         ticketService.failTicket(event.getTicketId());
     }
